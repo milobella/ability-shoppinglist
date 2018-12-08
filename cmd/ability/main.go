@@ -15,12 +15,12 @@ func main() {
 }
 
 func addToListHandler(req ability.Request, resp *ability.Response) {
-    // TODO: get it from the NLU
-    if err := shoppinglistClient.AddItem("des tomates"); err != nil {
+    item := req.Nlu.Parameter[0]
+    if err := shoppinglistClient.AddItem(item); err != nil {
         resp.Nlg.Sentence = "Error adding item to your shopping list"
         return
     }
 
     resp.Nlg.Sentence = "I added {{item}} to your shopping list"
-    resp.Nlg.Params = map[string]string{"item": "des tomates"}
+    resp.Nlg.Params = map[string]string{"item": item}
 }
