@@ -2,7 +2,7 @@ package shoppinglist
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,10 +11,14 @@ import (
 )
 
 type Client struct {
-	host string
-	port int
-	url string
-	client http.Client
+	host 	string
+	port 	int
+	url 	string
+	client 	http.Client
+}
+
+type ShoppingItem struct {
+	Item 	string 	`json:"item,omitempty"`
 }
 
 func NewClient(host string, port int) *Client {
@@ -23,11 +27,19 @@ func NewClient(host string, port int) *Client {
 }
 
 
-func (c Client) makeRequest(item string) (result []byte, err error) {
+func (c Client) makeRequest(items []string) (result []byte, err error) {
 	endpoint := strings.Join([]string{c.url, "items"}, "/")
 
-	str := fmt.Sprintf("[{\"item\": \"%s\"}]", item)
-	req, err := http.NewRequest("PUT", endpoint, bytes.NewBuffer([]byte(str)))
+	var jsonItems []ShoppingItem
+	for _, item := range items {
+		jsonItems = append(jsonItems, ShoppingItem{Item: item})
+	}
+	b, err := json.Marshal(jsonItems)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	req, err := http.NewRequest("PUT", endpoint, bytes.NewBuffer(b))
 	if err != nil {
 		log.Print(err)
 		return
@@ -49,7 +61,7 @@ func (c Client) makeRequest(item string) (result []byte, err error) {
 }
 
 
-func (c Client) AddItem(s string) (err error) {
+func (c Client) AddItems(s []string) (err error) {
 	_, err = c.makeRequest(s)
 	return
 }
