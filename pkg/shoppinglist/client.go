@@ -3,10 +3,10 @@ package shoppinglist
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -22,7 +22,7 @@ type ShoppingItem struct {
 }
 
 func NewClient(host string, port int) *Client {
-	url := strings.Join([]string{host, strconv.Itoa(port)}, ":")
+	url := fmt.Sprintf("http://%s:%d", host, port)
 	return &Client{host: host, port: port, url: url, client: http.Client{}}
 }
 
