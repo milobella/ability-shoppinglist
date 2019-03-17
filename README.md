@@ -1,4 +1,4 @@
-# Code skeleton of a Milobella ability written in go
+# Shopping list ability
 
 # Build
 ```bash

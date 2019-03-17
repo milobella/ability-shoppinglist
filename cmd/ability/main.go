@@ -1,16 +1,58 @@
 package main
 
 import (
-    "gitlab.milobella.com/milobella/abilities/ability-sdk-go/pkg/ability"
-    "gitlab.milobella.com/milobella/abilities/shoppinglist-ability/pkg/shoppinglist"
+    "encoding/json"
+    "github.com/juju/loggo"
+    "github.com/stevenroose/gonfig"
+    "gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
+    "gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
+    "gitlab.milobella.com/milobella/shoppinglist-ability/pkg/shoppinglist"
     "gitlab.milobella.com/milobella/oratio/pkg/anima"
+    "log"
 )
 
 var shoppingListClient = shoppinglist.NewClient("http://0.0.0.0", 4848)
 
+type Configuration struct {
+    Server     config.ServerConfiguration
+    ConfigFile string `short:"c"`
+}
+
+func (c Configuration) String() string {
+    b, err := json.Marshal(c)
+    if err != nil {
+        log.Fatal("Configuration serialization error %s", err)
+    }
+    return string(b)
+}
+
+var conf *Configuration
+
 // fun main()
 func main() {
-    server := ability.NewServer(10400)
+    conf = &Configuration{}
+
+    // Load the configuration from file or parameter or env
+    err := gonfig.Load(conf, gonfig.Conf{
+        ConfigFileVariable: "configfile", // enables passing --configfile myfile.conf
+
+        FileDefaultFilename: "config/shoppinglist-ability.toml",
+        FileDecoder:         gonfig.DecoderTOML,
+
+        EnvPrefix: "ABILITY_",
+    })
+
+    logger := loggo.GetLogger("shoppinglist-ability.main")
+    if err != nil {
+        loggo.ConfigureLoggers("<root>=INFO")
+        logger.Criticalf("Error reading config : %s", err)
+    } else {
+        loggo.ConfigureLoggers(conf.Server.LogLevel)
+        logger.Infof("Successfully readen configuration file : %s", conf.ConfigFile)
+        logger.Debugf("-> %+v", conf)
+    }
+
+    server := ability.NewServer(conf.Server.Port)
     server.RegisterIntent("ADD_TO_LIST", addToListHandler)
     server.Serve()
 }
