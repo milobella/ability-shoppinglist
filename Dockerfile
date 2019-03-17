@@ -39,8 +39,8 @@ RUN chmod 700 /root/.ssh/id_rsa
 
 # Install dependencies using the private RSA key
 RUN dep ensure
-RUN go build -o /bin/main cmd/$MODULE_NAME/main.go
-ENV CONFIGURATION_PATH=/etc/$MODULE_NAME.toml
+RUN go build -o /bin/main cmd/ability/main.go
+ENV CONFIGURATION_PATH=/etc/ability.toml
 RUN cp config/$MODULE_NAME.toml ${CONFIGURATION_PATH}
 
 # Clean step (necessary for security considerations)

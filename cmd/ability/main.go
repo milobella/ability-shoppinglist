@@ -37,7 +37,7 @@ func main() {
 	err := gonfig.Load(conf, gonfig.Conf{
 		ConfigFileVariable: "configfile", // enables passing --configfile myfile.conf
 
-		FileDefaultFilename: "config/shoppinglist-ability.toml",
+		FileDefaultFilename: "config/ability.toml",
 		FileDecoder:         gonfig.DecoderTOML,
 
 		EnvPrefix: "ABILITY_",
