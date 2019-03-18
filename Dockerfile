@@ -41,7 +41,7 @@ RUN chmod 700 /root/.ssh/id_rsa
 RUN dep ensure
 RUN go build -o /bin/main cmd/ability/main.go
 ENV CONFIGURATION_PATH=/etc/ability.toml
-RUN cp config/$MODULE_NAME.toml ${CONFIGURATION_PATH}
+RUN cp config/ability.toml ${CONFIGURATION_PATH}
 
 # Clean step (necessary for security considerations)
 WORKDIR /
