@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/celian-garcia/gonfig"
 	"github.com/juju/loggo"
-	"github.com/stevenroose/gonfig"
 	"gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
 	"gitlab.milobella.com/milobella/oratio/pkg/anima"
 	"gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
