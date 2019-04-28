@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Helm Chart of shopping list ability project
+name: ability-shoppinglist
+version: 0.1.0
