@@ -59,6 +59,7 @@ func main() {
     // Initialize server
     server := ability.NewServer("Shopping List Ability", conf.Server.Port)
     server.RegisterIntent("ADD_TO_LIST", addToListHandler)
+    server.RegisterIntent("TRIGGER_SHOPPING_LIST", triggerShoppingListHandler)
     server.Serve()
 }
 
@@ -82,6 +83,21 @@ func addToListHandler(req ability.Request, resp *ability.Response) {
     resp.Nlg.Params = []anima.NLGParam{{
         Name:  "items",
         Value: items,
+        Type:  "enumerated_list",
+    }}
+}
+
+func triggerShoppingListHandler(req ability.Request, resp *ability.Response) {
+    items, err := shoppingListClient.GetItems()
+    if err != nil {
+        resp.Nlg.Sentence = "Error receiving item from your shopping list"
+        return
+    }
+    // Build the NLG answer
+    resp.Nlg.Sentence = "You have {{number}} items in your main shopping list, what do you want to do ?"
+    resp.Nlg.Params = []anima.NLGParam{{
+        Name:  "number",
+        Value: len(items),
         Type:  "enumerated_list",
     }}
 }
