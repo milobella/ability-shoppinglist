@@ -94,11 +94,11 @@ func triggerShoppingListHandler(req ability.Request, resp *ability.Response) {
         return
     }
     // Build the NLG answer
-    resp.Nlg.Sentence = "You have {{number}} items in your main shopping list, what do you want to do ?"
+    resp.Nlg.Sentence = "You have {{count}} items in your main shopping list, what do you want to do ?"
     resp.Nlg.Params = []anima.NLGParam{{
-        Name:  "number",
+        Name:  "count",
         Value: len(items),
-        Type:  "enumerated_list",
+        Type:  "string",
     }}
     resp.AutoReprompt = true
 }
