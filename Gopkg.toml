@@ -30,7 +30,7 @@
   name = "github.com/juju/loggo"
 
 [[constraint]]
-  branch = "master"
+  version = "0.1.0"
   name = "gitlab.milobella.com/milobella/ability-sdk-go"
 
 [[constraint]]
