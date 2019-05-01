@@ -30,13 +30,9 @@
   name = "github.com/juju/loggo"
 
 [[constraint]]
-  version = "0.1.0"
+  version = "0.2.0"
   name = "gitlab.milobella.com/milobella/ability-sdk-go"
 
 [[constraint]]
   branch = "master"
   name = "gitlab.milobella.com/milobella/oratio"
-
-[prune]
-  go-tests = true
-  unused-packages = true

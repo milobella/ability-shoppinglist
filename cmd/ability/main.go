@@ -100,4 +100,5 @@ func triggerShoppingListHandler(req ability.Request, resp *ability.Response) {
         Value: len(items),
         Type:  "enumerated_list",
     }}
+    resp.AutoReprompt = true
 }
