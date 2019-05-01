@@ -2,83 +2,56 @@
 
 
 [[projects]]
-  digest = "1:b51d7f60b923aaa5d28e71b28ab8a2f374ad3b80c0edf20c9e6a08a5c938c88d"
   name = "github.com/celian-garcia/gonfig"
   packages = ["."]
-  pruneopts = "UT"
   revision = "e459e03044df1de4df89c5be71deaac7718b0909"
   version = "v0.1.1"
 
 [[projects]]
-  digest = "1:ca59b1175189b3f0e9f1793d2c350114be36eaabbe5b9f554b35edee1de50aea"
   name = "github.com/gorilla/mux"
   packages = ["."]
-  pruneopts = "UT"
-  revision = "a7962380ca08b5a188038c69871b8d3fbdf31e89"
-  version = "v1.7.0"
+  revision = "c5c6c98bc25355028a63748a498942a6398ccd22"
+  version = "v1.7.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:a330103bc9731260ee9fa14764e9e3fce46e02de19d6aca3eeba1d425badfbf0"
   name = "github.com/juju/loggo"
   packages = ["."]
-  pruneopts = "UT"
   revision = "d976af380377adda50b2d34279f1dec3507504ac"
 
 [[projects]]
-  digest = "1:95741de3af260a92cc5c7f3f3061e85273f5a81b5db20d4bd68da74bd521675e"
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  pruneopts = "UT"
-  revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
-  version = "v1.2.0"
+  revision = "63909f0a90ab0f36909e8e044e46ace10cf13ba2"
+  version = "v1.3.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:1093e9fe25f0e246b27add1d99d3fccd69dc00efb2d0fea4741c84cb9eff5936"
   name = "gitlab.milobella.com/milobella/ability-sdk-go"
   packages = ["pkg/ability"]
-  pruneopts = "UT"
-  revision = "24847f672b1fa2a1c8033497a0c5338c31b136a2"
+  revision = "faacca291414793ee6f8b72088374d40df0f8be5"
+  version = "0.2.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:ae3f20e3ae99a9e055326bd0fc9ef2d0c745acb6f9d1db07fa209d22c3d4c547"
   name = "gitlab.milobella.com/milobella/oratio"
-  packages = [
-    "pkg/anima",
-    "pkg/cerebro",
-  ]
-  pruneopts = "UT"
-  revision = "f22897ac9b8f559309d639ced698d0cbfd38cb8a"
+  packages = ["pkg/anima","pkg/cerebro"]
+  revision = "21103c94a0c1d6f7d39bf14c61d67a6bfce0be92"
 
 [[projects]]
   branch = "master"
-  digest = "1:ed708ad22c955df62e7eaba9ddd9edd3afc7818a4a72d9680bf797ac6c5ae3a8"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows",
-  ]
-  pruneopts = "UT"
-  revision = "a2f829d7f35f2ed1c3520c553a6226495455cae0"
+  packages = ["unix","windows"]
+  revision = "d89cdac9e8725f2aefce25fcbfef41134c9ad412"
 
 [[projects]]
-  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  pruneopts = "UT"
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = [
-    "github.com/celian-garcia/gonfig",
-    "github.com/juju/loggo",
-    "gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability",
-    "gitlab.milobella.com/milobella/oratio/pkg/anima",
-  ]
+  inputs-digest = "d7fe39f56f417a9d5754b621ddf63997ab7cbe6b575303cef8df70ecac3a123b"
   solver-name = "gps-cdcl"
   solver-version = 1
