@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: celiangarcia/shoppinglist-ability
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 nameOverride: ""
 fullnameOverride: ""
