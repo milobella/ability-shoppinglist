@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/gorilla/mux"
   packages = ["."]
-  revision = "c5c6c98bc25355028a63748a498942a6398ccd22"
-  version = "v1.7.1"
+  revision = "ed099d42384823742bba0bf9a72b53b55c9e2e38"
+  version = "v1.7.2"
 
 [[projects]]
   branch = "master"
@@ -22,26 +22,20 @@
 [[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "63909f0a90ab0f36909e8e044e46ace10cf13ba2"
-  version = "v1.3.0"
+  revision = "728039f679cbcd4f6a54e080d2219a4c4928c546"
+  version = "v1.4.0"
 
 [[projects]]
   name = "gitlab.milobella.com/milobella/ability-sdk-go"
   packages = ["pkg/ability"]
-  revision = "faacca291414793ee6f8b72088374d40df0f8be5"
+  revision = "d5f821735946740d7ccc65767d1f15a9f3b62dfb"
   version = "0.2.0"
-
-[[projects]]
-  branch = "master"
-  name = "gitlab.milobella.com/milobella/oratio"
-  packages = ["pkg/anima","pkg/cerebro"]
-  revision = "21103c94a0c1d6f7d39bf14c61d67a6bfce0be92"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "d89cdac9e8725f2aefce25fcbfef41134c9ad412"
+  revision = "61b9204099cb1bebc803c9ffb9b2d3acd9d457d9"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -52,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d7fe39f56f417a9d5754b621ddf63997ab7cbe6b575303cef8df70ecac3a123b"
+  inputs-digest = "2b1c40d5a915203c50cd8afb6d13a24633da20f9b018642d6826965a0e6811b9"
   solver-name = "gps-cdcl"
   solver-version = 1

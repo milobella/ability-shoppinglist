@@ -1,104 +1,176 @@
 package main
 
 import (
-    "encoding/json"
-    "github.com/celian-garcia/gonfig"
-    "github.com/juju/loggo"
-    "gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
-    "gitlab.milobella.com/milobella/oratio/pkg/anima"
-    "gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
-    "gitlab.milobella.com/milobella/shoppinglist-ability/pkg/shoppinglist"
-    "log"
+	"encoding/json"
+	"log"
+
+	"github.com/celian-garcia/gonfig"
+	"github.com/juju/loggo"
+	"gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
+	"gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
+	"gitlab.milobella.com/milobella/shoppinglist-ability/pkg/shoppinglist"
 )
 
 var shoppingListClient *shoppinglist.Client
 
 type Configuration struct {
-    Server     config.ServerConfiguration
-    Tool       config.ToolConfiguration
-    ConfigFile string `short:"c"`
+	Server     config.ServerConfiguration
+	Tool       config.ToolConfiguration
+	ConfigFile string `short:"c"`
 }
 
 func (c Configuration) String() string {
-    b, err := json.Marshal(c)
-    if err != nil {
-        log.Fatalf("Configuration serialization error %v", err)
-    }
-    return string(b)
+	b, err := json.Marshal(c)
+	if err != nil {
+		log.Fatalf("Configuration serialization error %v", err)
+	}
+	return string(b)
 }
 
 var conf *Configuration
 
+var deleteAction string
+var addAction string
+var itemsSlot string
+var itemEntity string
+func init() {
+	deleteAction = "DELETE"
+	addAction = "ADD"
+	itemsSlot = "ITEMS"
+	itemEntity = "SHOPITEM"
+}
+
 // fun main()
 func main() {
-    conf = &Configuration{}
+	//TODO: change the configuration for vyper
+	conf = &Configuration{}
 
-    // Load the configuration from file or parameter or env
-    err := gonfig.Load(conf, gonfig.Conf{
-        ConfigFileVariable: "configfile", // enables passing --configfile myfile.conf
+	// Load the configuration from file or parameter or env
+	err := gonfig.Load(conf, gonfig.Conf{
+		ConfigFileVariable: "configfile", // enables passing --configfile myfile.conf
 
-        FileDefaultFilename: "config/ability.toml",
-        FileDecoder:         gonfig.DecoderTOML,
+		FileDefaultFilename: "config/ability.toml",
+		FileDecoder:         gonfig.DecoderTOML,
 
-        EnvPrefix: "ABILITY_",
-    })
+		EnvPrefix: "ABILITY_",
+	})
 
-    logger := loggo.GetLogger("shoppinglist-ability.main")
-    if err != nil {
-        loggo.ConfigureLoggers("<root>=INFO")
-        logger.Criticalf("Error reading config : %s", err)
-    } else {
-        loggo.ConfigureLoggers(conf.Server.LogLevel)
-        logger.Infof("Successfully readen configuration file ! %s", conf.String())
-        logger.Debugf("-> %+v", conf)
-    }
+	//TODO: change the logger for logrus
+	logger := loggo.GetLogger("shoppinglist-ability.main")
+	if err != nil {
+		loggo.ConfigureLoggers("<root>=INFO")
+		logger.Criticalf("Error reading config : %s", err)
+	} else {
+		loggo.ConfigureLoggers(conf.Server.LogLevel)
+		logger.Infof("Successfully readen configuration file ! %s", conf.String())
+		logger.Debugf("-> %+v", conf)
+	}
 
-    // Initialize client for shopping list tool
-    shoppingListClient = shoppinglist.NewClient(conf.Tool.Host, conf.Tool.Port)
+	// Initialize client for shopping list tool
+	shoppingListClient = shoppinglist.NewClient(conf.Tool.Host, conf.Tool.Port)
 
-    // Initialize server
-    server := ability.NewServer("Shopping List Ability", conf.Server.Port)
-    server.RegisterIntent("ADD_TO_LIST", addToListHandler)
-    server.RegisterIntent("TRIGGER_SHOPPING_LIST", triggerShoppingListHandler)
-    server.Serve()
+	// Initialize server
+	server := ability.NewServer("Shopping List Ability", conf.Server.Port)
+	// TODO: remove it to use only rule
+	if err = server.RegisterIntent("ADD_TO_LIST", func(req ability.Request, resp *ability.Response) {
+		addToListHandler(&req, resp)
+	}); err != nil {
+		logger.Criticalf(err.Error())
+	}
+	// TODO: remove it to use only rule
+	if err = server.RegisterIntent("TRIGGER_SHOPPING_LIST", func(req ability.Request, resp *ability.Response) {
+		triggerShoppingListHandler(&req, resp)
+	}); err != nil {
+		logger.Criticalf(err.Error())
+	}
+	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
+	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
+	server.RegisterIntentRule("TRIGGER_SHOPPING_LIST", triggerShoppingListHandler)
+	server.RegisterRule(isRemoveContext, removeFromListHandler)
+	server.RegisterRule(isAddContext, addToListHandler)
+	server.Serve()
 }
 
-func addToListHandler(req ability.Request, resp *ability.Response) {
-    // Retrieve only shopping items from NLU entities
-    var items []string
-    for _, ent := range req.Nlu.Entities {
-        if ent.Label == "SHOPITEM" {
-            items = append(items, ent.Text)
-        }
-    }
-
-    // Add these items into the shopping list
-    if err := shoppingListClient.AddItems(items); err != nil {
-        resp.Nlg.Sentence = "Error adding item to your shopping list"
-        return
-    }
-
-    // Build the NLG answer
-    resp.Nlg.Sentence = "I added {{items}} to your shopping list"
-    resp.Nlg.Params = []anima.NLGParam{{
-        Name:  "items",
-        Value: items,
-        Type:  "enumerated_list",
-    }}
+func isRemoveContext(req *ability.Request) bool {
+	return req.IsInSlotFillingAction(deleteAction)
 }
 
-func triggerShoppingListHandler(req ability.Request, resp *ability.Response) {
-    items, err := shoppingListClient.GetItems()
-    if err != nil {
-        resp.Nlg.Sentence = "Error receiving item from your shopping list"
-        return
-    }
-    // Build the NLG answer
-    resp.Nlg.Sentence = "You have {{count}} items in your main shopping list, what do you want to do ?"
-    resp.Nlg.Params = []anima.NLGParam{{
-        Name:  "count",
-        Value: len(items),
-        Type:  "string",
-    }}
-    resp.AutoReprompt = true
+func isAddContext(req *ability.Request) bool {
+	return req.IsInSlotFillingAction(addAction)
+}
+
+func removeFromListHandler(req *ability.Request, resp *ability.Response) {
+	// Retrieve only shopping items from NLU entities
+	items := collectItemsFromRequest(req)
+
+	// If we don't find any items in the request, we ask to user
+	if len(items) == 0 {
+		resp.Nlg.Sentence = "What do you want to delete from your shopping list ?"
+		resp.Context.SlotFilling.Action = deleteAction
+		resp.Context.SlotFilling.MissingSlots = []string{itemsSlot}
+		resp.AutoReprompt = true
+		return
+	}
+
+	// Remove these items from the shopping list
+	if err := shoppingListClient.RemoveItems(items); err != nil {
+		resp.Nlg.Sentence = "Error removing item from your shopping list."
+		return
+	}
+
+	// Build the NLG answer
+	resp.Nlg.Sentence = "I removed {{items}} from your shopping list."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "items",
+		Value: items,
+		Type:  "enumerated_list",
+	}}
+}
+
+func addToListHandler(req *ability.Request, resp *ability.Response) {
+	// Retrieve only shopping items from NLU entities
+	items := collectItemsFromRequest(req)
+
+	// If we don't find any items in the request, we ask to user
+	if len(items) == 0 {
+		resp.Nlg.Sentence = "What do you want to add to your shopping list ?"
+		resp.Context.SlotFilling.Action = addAction
+		resp.Context.SlotFilling.MissingSlots = []string{itemsSlot}
+		resp.AutoReprompt = true
+		return
+	}
+
+	// Add these items into the shopping list
+	if err := shoppingListClient.AddItems(items); err != nil {
+		resp.Nlg.Sentence = "Error adding item to your shopping list."
+		return
+	}
+
+	// Build the NLG answer
+	resp.Nlg.Sentence = "I added {{items}} to your shopping list"
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "items",
+		Value: items,
+		Type:  "enumerated_list",
+	}}
+}
+
+func triggerShoppingListHandler(req *ability.Request, resp *ability.Response) {
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error receiving item from your shopping list."
+		return
+	}
+	// Build the NLG answer
+	resp.Nlg.Sentence = "You have {{count}} items in your main shopping list, what do you want to do ?"
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: len(items),
+		Type:  "string",
+	}}
+	resp.AutoReprompt = true
+}
+
+func collectItemsFromRequest(req *ability.Request) []string {
+	return req.GetEntitiesByLabel(itemEntity)
 }
