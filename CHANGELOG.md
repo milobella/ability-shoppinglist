@@ -6,5 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ##  [Unreleased]
 ###  Added
-- Created a Dockerfile to generate a docker image
-- Add an item to the shopping list
+- Remove an item from the shopping list (with reprompt).
+- Add an item to the shopping list (with reprompt).
+- Trigger the list with reprompt.
+- Created a Dockerfile to generate a docker image.

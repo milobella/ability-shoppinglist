@@ -49,6 +49,20 @@ func (c Client) makeRequest(method string, endpoint string, input []byte) (resul
     return output, err
 }
 
+func (c Client) RemoveItems(items []string) (err error) {
+    endpoint := strings.Join([]string{c.url, "items"}, "/")
+
+    var queryParams []string
+    for _, item := range items {
+        queryParams = append(queryParams, fmt.Sprintf("items=%s", item))
+    }
+    endpoint = strings.Join([]string{endpoint, strings.Join(queryParams, "&")}, "?")
+
+    // Proceed the request
+    _, err = c.makeRequest("DELETE", endpoint, nil)
+    return
+}
+
 
 func (c Client) AddItems(items []string) (err error) {
     endpoint := strings.Join([]string{c.url, "items"}, "/")
