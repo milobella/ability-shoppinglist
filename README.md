@@ -36,7 +36,7 @@ $ bin/ability -c config/ability.toml
     Content-Length: 166
     Content-Type: text/plain; charset=utf-8
 
-    {"nlg":{"sentence":"You have {{number}} items in your main shopping list, what do you want to do ?","params":[{"name":"number","value":2,"type":"enumerated_list"}]}}
+    {"nlg":{"sentence":"You have {{count}} items in your main shopping list, what do you want to do ?","params":[{"name":"count","value":2,"type":"enumerated_list"}]}}
 
 </details>
 
