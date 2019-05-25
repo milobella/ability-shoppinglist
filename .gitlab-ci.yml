@@ -6,6 +6,7 @@ stages:
   - deploy
 
 variables:
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   DH_REGISTRY_IMAGE: $DOCKER_USER/$CI_PROJECT_NAME
 
 build:
@@ -15,9 +16,6 @@ build:
     MODULE_NAME: ${CI_PROJECT_NAME}
     GITLAB_HOST: "gitlab.milobella.com"
     MODULE_DESCRIPTION: "Ability to manage the shopping list from Milobella"
-  before_script:
-    # Login to gitlab registry
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     # Write the id_rsa private key into the good path
     - mkdir -p private && echo "$SSH_PRIVATE_KEY" | tr -d '\r' > private/id_rsa
@@ -53,6 +51,8 @@ build-release-image:
       --build-arg VCS_REF=master
       --build-arg SSH_RSA_KEY=private/id_rsa
       .
+    - docker tag $CONTAINER_TEST_IMAGE $DH_REGISTRY_IMAGE:latest
+    - docker tag $CONTAINER_TEST_IMAGE $DH_REGISTRY_IMAGE:${APP_VERSION}
     - docker push $DH_REGISTRY_IMAGE:latest
     - docker push $DH_REGISTRY_IMAGE:${APP_VERSION}
   tags: [docker,milobella]
