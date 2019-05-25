@@ -66,6 +66,6 @@ deploy:
     # Package the helm chart into a tgz repository
     - helm package helm/ability-shoppinglist --app-version=${APP_VERSION} --destination bin
     # Install/Upgrade the freshly packaged helm chart into the minikube cluster
-    - helm upgrade --install ability-shoppinglist bin/ability-shoppinglist-*.tgz --debug --set image.tag=${APP_VERSION}
+    - helm upgrade --recreate-pods --force  --install ability-shoppinglist bin/ability-shoppinglist-*.tgz --debug --set image.tag=${APP_VERSION}
   tags: [docker,milobella]
   only: [master]
