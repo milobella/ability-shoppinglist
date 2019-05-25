@@ -20,10 +20,22 @@
   revision = "d976af380377adda50b2d34279f1dec3507504ac"
 
 [[projects]]
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "728039f679cbcd4f6a54e080d2219a4c4928c546"
   version = "v1.4.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "2a22dbedbad1fd454910cd1f44f210ef90c28464"
 
 [[projects]]
   name = "gitlab.milobella.com/milobella/ability-sdk-go"
@@ -35,7 +47,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "61b9204099cb1bebc803c9ffb9b2d3acd9d457d9"
+  revision = "dbbf3f1254d491605cf4a0034ce25d0dc71b0c58"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -46,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2b1c40d5a915203c50cd8afb6d13a24633da20f9b018642d6826965a0e6811b9"
+  inputs-digest = "57ad8a4a2dd77ccad90f2be6bd77128d54033682d27bf58e14394e6af052ceea"
   solver-name = "gps-cdcl"
   solver-version = 1

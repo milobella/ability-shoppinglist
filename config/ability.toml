@@ -1,6 +1,6 @@
 [server]
 port = 4444
-log_level = "<root>=INFO"
+log_level = "<root>=DEBUG"
 
 [tool]
 host = "0.0.0.0"

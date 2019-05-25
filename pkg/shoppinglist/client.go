@@ -4,8 +4,8 @@ import (
     "bytes"
     "encoding/json"
     "fmt"
+    "github.com/sirupsen/logrus"
     "io/ioutil"
-    "log"
     "net/http"
     "strings"
 )
@@ -30,19 +30,19 @@ func (c Client) makeRequest(method string, endpoint string, input []byte) (resul
 
     req, err := http.NewRequest(method, endpoint, bytes.NewBuffer(input))
     if err != nil {
-        log.Print(err)
+        logrus.Error(err)
         return
     }
 
     resp, err := c.client.Do(req)
     if err != nil {
-        log.Print(err)
+        logrus.Error(err)
         return
     }
     output, err := ioutil.ReadAll(resp.Body)
     defer resp.Body.Close()
     if err != nil {
-        log.Print(err)
+        logrus.Error(err)
         return
     }
 
@@ -74,7 +74,7 @@ func (c Client) AddItems(items []string) (err error) {
     }
     b, err := json.Marshal(jsonItems)
     if err != nil {
-        log.Print(err)
+        logrus.Error(err)
         return
     }
 
@@ -94,7 +94,7 @@ func (c Client) GetItems() (result []string, err error) {
     err = json.Unmarshal(resp, &items)
 
     if err != nil {
-        log.Print(err)
+        logrus.Error(err)
         return
     }
 

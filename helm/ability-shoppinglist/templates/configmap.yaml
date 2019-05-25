@@ -11,7 +11,7 @@ data:
   configuration-file: |
     [server]
     port = {{ .Values.containerPort }}
-    log_level = "<root>=INFO"
+    log_level = "<root>=DEBUG"
 
     [tool]
     host = "tool-shoppinglist"

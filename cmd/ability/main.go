@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/celian-garcia/gonfig"
-	"github.com/juju/loggo"
+	"github.com/sirupsen/logrus"
 	"gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
 	"gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
 	"gitlab.milobella.com/milobella/shoppinglist-ability/pkg/shoppinglist"
@@ -33,11 +34,23 @@ var deleteAction string
 var addAction string
 var itemsSlot string
 var itemEntity string
+
+
+//TODO: use this init function to initialize variables instead of initialize on top
 func init() {
 	deleteAction = "DELETE"
 	addAction = "ADD"
 	itemsSlot = "ITEMS"
 	itemEntity = "SHOPITEM"
+
+	logrus.SetFormatter(&logrus.TextFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	logrus.SetOutput(os.Stdout)
+
+	// TODO: read it in the config when move to viper
+	logrus.SetLevel(logrus.DebugLevel)
 }
 
 // fun main()
@@ -55,15 +68,11 @@ func main() {
 		EnvPrefix: "ABILITY_",
 	})
 
-	//TODO: change the logger for logrus
-	logger := loggo.GetLogger("shoppinglist-ability.main")
 	if err != nil {
-		loggo.ConfigureLoggers("<root>=INFO")
-		logger.Criticalf("Error reading config : %s", err)
+		logrus.Fatalf("Error reading config : %s", err)
 	} else {
-		loggo.ConfigureLoggers(conf.Server.LogLevel)
-		logger.Infof("Successfully readen configuration file ! %s", conf.String())
-		logger.Debugf("-> %+v", conf)
+		logrus.Infof("Successfully readen configuration file : %s", conf.ConfigFile)
+		logrus.Debugf("-> %+v", conf)
 	}
 
 	// Initialize client for shopping list tool
@@ -75,13 +84,13 @@ func main() {
 	if err = server.RegisterIntent("ADD_TO_LIST", func(req ability.Request, resp *ability.Response) {
 		addToListHandler(&req, resp)
 	}); err != nil {
-		logger.Criticalf(err.Error())
+		logrus.Errorf(err.Error())
 	}
 	// TODO: remove it to use only rule
 	if err = server.RegisterIntent("TRIGGER_SHOPPING_LIST", func(req ability.Request, resp *ability.Response) {
 		triggerShoppingListHandler(&req, resp)
 	}); err != nil {
-		logger.Criticalf(err.Error())
+		logrus.Errorf(err.Error())
 	}
 	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
 	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
