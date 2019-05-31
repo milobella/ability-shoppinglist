@@ -1,6 +1,6 @@
-include: '/templates/.go-ability-template.yml'
-
-image: docker:stable
+include:
+  - project: 'milobella/devops/ci-templates'
+    file: '/templates/go-ability.yml'
 
 stages:
   - build
