@@ -14,3 +14,4 @@ variables:
   MODULE_NAME: ${CI_PROJECT_NAME}
   GITLAB_HOST: "gitlab.milobella.com"
   MODULE_DESCRIPTION: "Http server which is the main and only entry point of Milobella."
+  HELM_NAME: "ability-shoppinglist"
