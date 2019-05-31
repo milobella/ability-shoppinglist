@@ -1,6 +1,4 @@
-include:
-  - project: 'milobella/shoppinglist-ability'
-    file: '/templates/.go-ability-template.yml'
+include: '/templates/.go-ability-template.yml'
 
 image: docker:stable
 
@@ -16,6 +14,3 @@ variables:
   MODULE_NAME: ${CI_PROJECT_NAME}
   GITLAB_HOST: "gitlab.milobella.com"
   MODULE_DESCRIPTION: "Http server which is the main and only entry point of Milobella."
-
-Release Image:
-  tags: [docker,milobella]

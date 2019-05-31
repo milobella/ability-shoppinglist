@@ -13,6 +13,7 @@ Build:
       --build-arg VCS_REF=master
       --build-arg SSH_RSA_KEY=private/id_rsa
       .
+  tags: [docker,milobella]
   except: [master]
 
 Release Image:
@@ -38,6 +39,7 @@ Release Image:
     - docker tag $CONTAINER_TEST_IMAGE $DH_REGISTRY_IMAGE:${APP_VERSION}
     - docker push $DH_REGISTRY_IMAGE:latest
     - docker push $DH_REGISTRY_IMAGE:${APP_VERSION}
+  tags: [docker,milobella]
   only: [master]
 
 Deploy:
