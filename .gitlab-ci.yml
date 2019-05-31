@@ -1,5 +1,6 @@
-image: docker:stable
 include: '/templates/.go-ability-template.yml'
+
+image: docker:stable
 
 stages:
   - build
