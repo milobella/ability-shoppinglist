@@ -17,3 +17,5 @@ variables:
   GITLAB_HOST: "gitlab.milobella.com"
   MODULE_DESCRIPTION: "Http server which is the main and only entry point of Milobella."
 
+Release Image:
+  tags: [docker,milobella]

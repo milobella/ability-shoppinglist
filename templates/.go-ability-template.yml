@@ -13,7 +13,6 @@ Build:
       --build-arg VCS_REF=master
       --build-arg SSH_RSA_KEY=private/id_rsa
       .
-  tags: [docker,milobella]
   except: [master]
 
 Release Image:
