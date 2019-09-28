@@ -7,7 +7,7 @@ The ability to manage the shopping list.
 
 ## Prerequisites
 
-- Having access to [gitlab.milobella.com](https://gitlab.milobella.com/milobella)
+- Having access to [milobella.com/gitlab](https://milobella.com/gitlab/milobella)
 - Having ``golang`` installed [instructions](https://golang.org/doc/install)
 - Having ``go dep`` installed [instructions](https://golang.github.io/dep/docs/installation.html)
 
@@ -60,7 +60,7 @@ Content-Type: text/plain; charset=utf-8
     Date: Wed, 01 May 2019 21:03:11 GMT
     Content-Length: 136
     Content-Type: text/plain; charset=utf-8
-    
+
     {"nlg":{"sentence":"I added {{items}} to your shopping list","params":[{"name":"items","value":["du pain"],"type":"enumerated_list"}]}}
 
 </details>

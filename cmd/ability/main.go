@@ -7,9 +7,9 @@ import (
 
 	"github.com/celian-garcia/gonfig"
 	"github.com/sirupsen/logrus"
-	"gitlab.milobella.com/milobella/ability-sdk-go/pkg/ability"
-	"gitlab.milobella.com/milobella/shoppinglist-ability/internal/config"
-	"gitlab.milobella.com/milobella/shoppinglist-ability/pkg/shoppinglist"
+	"milobella.com/gitlab/milobella/ability-sdk-go/pkg/ability"
+	"milobella.com/gitlab/milobella/shoppinglist-ability/internal/config"
+	"milobella.com/gitlab/milobella/shoppinglist-ability/pkg/shoppinglist"
 )
 
 var shoppingListClient *shoppinglist.Client
