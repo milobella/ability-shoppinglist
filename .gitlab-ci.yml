@@ -12,6 +12,5 @@ variables:
   DH_REGISTRY_IMAGE: $DOCKER_USER/$CI_PROJECT_NAME
   PROJECT_NAME: "milobella"
   MODULE_NAME: ${CI_PROJECT_NAME}
-  GITLAB_HOST: "gitlab.milobella.com"
   MODULE_DESCRIPTION: "Milobella ability to manage a shopping list."
   HELM_NAME: "ability-shoppinglist"
