@@ -9,7 +9,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
-    - port: {{ .Values.containerPort }}
+    - name: ability
+      port: {{ .Values.containerPort }}
       protocol: TCP
   selector:
     app.kubernetes.io/name: {{ include "ability-shoppinglist.name" . }}
