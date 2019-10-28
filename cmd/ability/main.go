@@ -80,21 +80,15 @@ func main() {
 
 	// Initialize server
 	server := ability.NewServer("Shopping List Ability", conf.Server.Port)
-	// TODO: remove it to use only rule
-	if err = server.RegisterIntent("ADD_TO_LIST", func(req ability.Request, resp *ability.Response) {
-		addToListHandler(&req, resp)
-	}); err != nil {
-		logrus.Errorf(err.Error())
-	}
-	// TODO: remove it to use only rule
-	if err = server.RegisterIntent("TRIGGER_SHOPPING_LIST", func(req ability.Request, resp *ability.Response) {
-		triggerShoppingListHandler(&req, resp)
-	}); err != nil {
-		logrus.Errorf(err.Error())
-	}
-	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
-	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
 	server.RegisterIntentRule("TRIGGER_SHOPPING_LIST", triggerShoppingListHandler)
+	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
+	server.RegisterIntentRule("REMOVE_FROM_SHOPPING_LIST", removeFromListHandler)
+	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
+	server.RegisterIntentRule("ADD_TO_SHOPPING_LIST", addToListHandler)
+	server.RegisterIntentRule("EMPTY_LIST_ITEMS", emptyShoppingListHandler)
+	server.RegisterIntentRule("COUNT_LIST_ITEMS", countShoppingListHandler)
+	//TODO: implement the handler
+	//server.RegisterIntentRule("LIST_LIST_ITEMS", listShoppingListHandler)
 	server.RegisterRule(isRemoveContext, removeFromListHandler)
 	server.RegisterRule(isAddContext, addToListHandler)
 	server.Serve()
@@ -164,10 +158,10 @@ func addToListHandler(req *ability.Request, resp *ability.Response) {
 	}}
 }
 
-func triggerShoppingListHandler(req *ability.Request, resp *ability.Response) {
+func triggerShoppingListHandler(_ *ability.Request, resp *ability.Response) {
 	items, err := shoppingListClient.GetItems()
 	if err != nil {
-		resp.Nlg.Sentence = "Error receiving item from your shopping list."
+		resp.Nlg.Sentence = "Error receiving items from your shopping list."
 		return
 	}
 	// Build the NLG answer
@@ -178,6 +172,60 @@ func triggerShoppingListHandler(req *ability.Request, resp *ability.Response) {
 		Type:  "string",
 	}}
 	resp.AutoReprompt = true
+}
+
+func emptyShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	// Here we count the items
+	var count = -1
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		count = len(items)
+	}
+
+	// If there is no item, we don't go further
+	if count == 0 {
+		resp.Nlg.Sentence = "Your shopping list is already empty."
+		return
+	}
+
+	err = shoppingListClient.RemoveAllItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error removing all items from your shopping list."
+		return
+	}
+
+	// Build the NLG answer
+	if count < 0 {
+		resp.Nlg.Sentence = "Your shopping list has been cleared."
+		return
+	}
+
+	resp.Nlg.Sentence = "{{count}} items has been removed from your shopping list."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}}
+}
+
+func countShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error counting items from your shopping list."
+		return
+	}
+	count := len(items)
+	if count <= 0 {
+		resp.Nlg.Sentence = "You don't have any elements in your shopping list."
+		return
+	}
+
+	resp.Nlg.Sentence = "You have {{count}} items in your shopping list."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}}
 }
 
 func collectItemsFromRequest(req *ability.Request) []string {

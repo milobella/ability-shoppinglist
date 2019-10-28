@@ -63,6 +63,14 @@ func (c Client) RemoveItems(items []string) (err error) {
     return
 }
 
+func (c Client) RemoveAllItems() (err error) {
+    endpoint := strings.Join([]string{c.url, "items"}, "/")
+
+    // Proceed the request
+    _, err = c.makeRequest("DELETE", endpoint, nil)
+    return
+}
+
 
 func (c Client) AddItems(items []string) (err error) {
     endpoint := strings.Join([]string{c.url, "items"}, "/")
