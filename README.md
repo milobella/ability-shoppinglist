@@ -62,15 +62,40 @@ Content-Type: text/plain; charset=utf-8
 
 #### Remove all items from the shopping list
 
-> TODO: Provide example request
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "EMPTY_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:43:16 GMT
+Content-Length: 90
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"Your shopping list has been cleared."},"context":{"slot_filling":{}}}
+
+```
 
 #### Count items on the shopping list
 
-> TODO: Provide example request
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "COUNT_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:42:06 GMT
+Content-Length: 155
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"You have {{count}} items in your shopping list.","params":[{"name":"count","value":2,"type":"string"}]},"context":{"slot_filling":{}}}
+```
 
 #### List items on the shopping list
 
-> TODO: Provide example request
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "LIST_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:39:44 GMT
+Content-Length: 250
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"You have {{count}} items in your shopping list. There are {{items}}.","params":[{"name":"count","value":2,"type":"string"},{"name":"items","value":["haricots","haricots"],"type":"enumerated_list"}]},"context":{"slot_filling":{}}}
+```
 
 ## CHANGELOGS
 - [Application changelog](./CHANGELOG.md)
