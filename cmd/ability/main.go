@@ -87,8 +87,7 @@ func main() {
 	server.RegisterIntentRule("ADD_TO_SHOPPING_LIST", addToListHandler)
 	server.RegisterIntentRule("EMPTY_LIST_ITEMS", emptyShoppingListHandler)
 	server.RegisterIntentRule("COUNT_LIST_ITEMS", countShoppingListHandler)
-	//TODO: implement the handler
-	//server.RegisterIntentRule("LIST_LIST_ITEMS", listShoppingListHandler)
+	server.RegisterIntentRule("LIST_LIST_ITEMS", listShoppingListHandler)
 	server.RegisterRule(isRemoveContext, removeFromListHandler)
 	server.RegisterRule(isAddContext, addToListHandler)
 	server.Serve()
@@ -225,6 +224,40 @@ func countShoppingListHandler(_ *ability.Request, resp *ability.Response) {
 		Name:  "count",
 		Value: count,
 		Type:  "string",
+	}}
+}
+
+func listShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error receiving items from your shopping list."
+		return
+	}
+	count := len(items)
+	if count <= 0 {
+		resp.Nlg.Sentence = "You don't have any elements in your shopping list."
+		return
+	}
+
+	if count == 1 {
+		resp.Nlg.Sentence = "You only have one element in your shopping list. There is {{item}."
+		resp.Nlg.Params = []ability.NLGParam{{
+			Name:  "item",
+			Value: items[0],
+			Type:  "string",
+		}}
+		return
+	}
+
+	resp.Nlg.Sentence = "You have {{count}} items in your shopping list. There are {{items}}."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}, {
+		Name:  "items",
+		Value: items,
+		Type:  "enumerated_list",
 	}}
 }
 
