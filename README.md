@@ -9,12 +9,10 @@ The ability to manage the shopping list.
 
 - Having access to [milobella.com/gitlab](https://milobella.com/gitlab/milobella)
 - Having ``golang`` installed [instructions](https://golang.org/doc/install)
-- Having ``go dep`` installed [instructions](https://golang.github.io/dep/docs/installation.html)
 
 ## Build
 
 ```bash
-$ dep ensure
 $ go build -o bin/ability cmd/ability/main.go
 ```
 
@@ -27,18 +25,6 @@ $ bin/ability -c config/ability.toml
 ## Requests example
 
 #### Trigger the shopping list ability
-<details>
-<summary>Deprecated request</summary>
-
-    $ curl -i -X POST http://localhost:4444/resolve/TRIGGER_SHOPPING_LIST -d '{}'
-    HTTP/1.1 200 OK
-    Date: Wed, 01 May 2019 20:55:22 GMT
-    Content-Length: 166
-    Content-Type: text/plain; charset=utf-8
-
-    {"nlg":{"sentence":"You have {{count}} items in your main shopping list, what do you want to do ?","params":[{"name":"count","value":2,"type":"enumerated_list"}]}}
-
-</details>
 
 ```bash
 $ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "TRIGGER_SHOPPING_LIST"}}'
@@ -51,19 +37,6 @@ Content-Type: text/plain; charset=utf-8
 ```
 
 #### Add item to the shopping list
-
-<details>
-<summary>Deprecated request</summary>
-
-    $ curl -i -X POST http://localhost:4444/resolve/ADD_TO_LIST -d '{"nlu": {"entities": [{"label": "SHOPITEM", "text": "du pain"}]}}'
-    HTTP/1.1 200 OK
-    Date: Wed, 01 May 2019 21:03:11 GMT
-    Content-Length: 136
-    Content-Type: text/plain; charset=utf-8
-
-    {"nlg":{"sentence":"I added {{items}} to your shopping list","params":[{"name":"items","value":["du pain"],"type":"enumerated_list"}]}}
-
-</details>
 
 ```bash
 $ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "ADD_TO_LIST", "entities": [{"label": "SHOPITEM", "text": "haricots"}]}}'                                                                                                     130 ↵
@@ -85,6 +58,43 @@ Content-Length: 170
 Content-Type: text/plain; charset=utf-8
 
 {"nlg":{"sentence":"I removed {{items}} from your shopping list.","params":[{"name":"items","value":["haricots"],"type":"enumerated_list"}]},"context":{"slot_filling":{}}}
+```
+
+#### Remove all items from the shopping list
+
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "EMPTY_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:43:16 GMT
+Content-Length: 90
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"Your shopping list has been cleared."},"context":{"slot_filling":{}}}
+
+```
+
+#### Count items on the shopping list
+
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "COUNT_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:42:06 GMT
+Content-Length: 155
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"You have {{count}} items in your shopping list.","params":[{"name":"count","value":2,"type":"string"}]},"context":{"slot_filling":{}}}
+```
+
+#### List items on the shopping list
+
+```bash
+$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "LIST_LIST_ITEMS"}}'
+HTTP/1.1 200 OK
+Date: Wed, 30 Oct 2019 18:39:44 GMT
+Content-Length: 250
+Content-Type: text/plain; charset=utf-8
+
+{"nlg":{"sentence":"You have {{count}} items in your shopping list. There are {{items}}.","params":[{"name":"count","value":2,"type":"string"},{"name":"items","value":["haricots","haricots"],"type":"enumerated_list"}]},"context":{"slot_filling":{}}}
 ```
 
 ## CHANGELOGS

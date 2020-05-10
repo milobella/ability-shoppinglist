@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/celian-garcia/gonfig"
+	"github.com/milobella/ability-sdk-go/pkg/ability"
+	"github.com/milobella/shoppinglist-ability/internal/config"
+	"github.com/milobella/shoppinglist-ability/pkg/shoppinglist"
 	"github.com/sirupsen/logrus"
-	"milobella.com/gitlab/milobella/ability-sdk-go/pkg/ability"
-	"milobella.com/gitlab/milobella/shoppinglist-ability/internal/config"
-	"milobella.com/gitlab/milobella/shoppinglist-ability/pkg/shoppinglist"
 )
 
 var shoppingListClient *shoppinglist.Client
@@ -28,20 +28,14 @@ func (c Configuration) String() string {
 	return string(b)
 }
 
-var conf *Configuration
+const (
+	deleteAction="DELETE"
+	addAction="ADD"
+	itemsSlot="ITEMS"
+	itemEntity="SHOPITEM"
+)
 
-var deleteAction string
-var addAction string
-var itemsSlot string
-var itemEntity string
-
-
-//TODO: use this init function to initialize variables instead of initialize on top
 func init() {
-	deleteAction = "DELETE"
-	addAction = "ADD"
-	itemsSlot = "ITEMS"
-	itemEntity = "SHOPITEM"
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
 
@@ -56,7 +50,7 @@ func init() {
 // fun main()
 func main() {
 	//TODO: change the configuration for vyper
-	conf = &Configuration{}
+	conf := &Configuration{}
 
 	// Load the configuration from file or parameter or env
 	err := gonfig.Load(conf, gonfig.Conf{
@@ -80,21 +74,14 @@ func main() {
 
 	// Initialize server
 	server := ability.NewServer("Shopping List Ability", conf.Server.Port)
-	// TODO: remove it to use only rule
-	if err = server.RegisterIntent("ADD_TO_LIST", func(req ability.Request, resp *ability.Response) {
-		addToListHandler(&req, resp)
-	}); err != nil {
-		logrus.Errorf(err.Error())
-	}
-	// TODO: remove it to use only rule
-	if err = server.RegisterIntent("TRIGGER_SHOPPING_LIST", func(req ability.Request, resp *ability.Response) {
-		triggerShoppingListHandler(&req, resp)
-	}); err != nil {
-		logrus.Errorf(err.Error())
-	}
-	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
-	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
 	server.RegisterIntentRule("TRIGGER_SHOPPING_LIST", triggerShoppingListHandler)
+	server.RegisterIntentRule("REMOVE_FROM_LIST", removeFromListHandler)
+	server.RegisterIntentRule("REMOVE_FROM_SHOPPING_LIST", removeFromListHandler)
+	server.RegisterIntentRule("ADD_TO_LIST", addToListHandler)
+	server.RegisterIntentRule("ADD_TO_SHOPPING_LIST", addToListHandler)
+	server.RegisterIntentRule("EMPTY_LIST_ITEMS", emptyShoppingListHandler)
+	server.RegisterIntentRule("COUNT_LIST_ITEMS", countShoppingListHandler)
+	server.RegisterIntentRule("LIST_LIST_ITEMS", listShoppingListHandler)
 	server.RegisterRule(isRemoveContext, removeFromListHandler)
 	server.RegisterRule(isAddContext, addToListHandler)
 	server.Serve()
@@ -164,10 +151,10 @@ func addToListHandler(req *ability.Request, resp *ability.Response) {
 	}}
 }
 
-func triggerShoppingListHandler(req *ability.Request, resp *ability.Response) {
+func triggerShoppingListHandler(_ *ability.Request, resp *ability.Response) {
 	items, err := shoppingListClient.GetItems()
 	if err != nil {
-		resp.Nlg.Sentence = "Error receiving item from your shopping list."
+		resp.Nlg.Sentence = "Error receiving items from your shopping list."
 		return
 	}
 	// Build the NLG answer
@@ -178,6 +165,94 @@ func triggerShoppingListHandler(req *ability.Request, resp *ability.Response) {
 		Type:  "string",
 	}}
 	resp.AutoReprompt = true
+}
+
+func emptyShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	// Here we count the items
+	var count = -1
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		count = len(items)
+	}
+
+	// If there is no item, we don't go further
+	if count == 0 {
+		resp.Nlg.Sentence = "Your shopping list is already empty."
+		return
+	}
+
+	err = shoppingListClient.RemoveAllItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error removing all items from your shopping list."
+		return
+	}
+
+	// Build the NLG answer
+	if count < 0 {
+		resp.Nlg.Sentence = "Your shopping list has been cleared."
+		return
+	}
+
+	resp.Nlg.Sentence = "{{count}} items has been removed from your shopping list."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}}
+}
+
+func countShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error counting items from your shopping list."
+		return
+	}
+	count := len(items)
+	if count <= 0 {
+		resp.Nlg.Sentence = "You don't have any elements in your shopping list."
+		return
+	}
+
+	resp.Nlg.Sentence = "You have {{count}} items in your shopping list."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}}
+}
+
+func listShoppingListHandler(_ *ability.Request, resp *ability.Response) {
+	items, err := shoppingListClient.GetItems()
+	if err != nil {
+		resp.Nlg.Sentence = "Error receiving items from your shopping list."
+		return
+	}
+	count := len(items)
+	if count <= 0 {
+		resp.Nlg.Sentence = "You don't have any elements in your shopping list."
+		return
+	}
+
+	if count == 1 {
+		resp.Nlg.Sentence = "You only have one element in your shopping list. There is {{item}."
+		resp.Nlg.Params = []ability.NLGParam{{
+			Name:  "item",
+			Value: items[0],
+			Type:  "string",
+		}}
+		return
+	}
+
+	resp.Nlg.Sentence = "You have {{count}} items in your shopping list. There are {{items}}."
+	resp.Nlg.Params = []ability.NLGParam{{
+		Name:  "count",
+		Value: count,
+		Type:  "string",
+	}, {
+		Name:  "items",
+		Value: items,
+		Type:  "enumerated_list",
+	}}
 }
 
 func collectItemsFromRequest(req *ability.Request) []string {
