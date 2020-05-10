@@ -38,7 +38,7 @@ LABEL org.label-schema.version=$BUILD_VERSION
 LABEL org.label-schema.docker.cmd="docker run -it $DOCKER_IMAGE:$BUILD_VERSION"
 
 # Two files are necessary from the build stage : the configuration and the binary
-ENV CONFIGURATION_PATH=/etc/ability.toml
+ENV CONFIGURATION_PATH=/etc/ability/config.toml
 ENV BINARY_PATH=/bin/ability
 
 COPY --from=builder /src/config/ability.toml ${CONFIGURATION_PATH}
