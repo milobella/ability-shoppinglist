@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/celian-garcia/gonfig"
+	"github.com/milobella/ability-sdk-go/pkg/ability"
+	"github.com/milobella/shoppinglist-ability/internal/config"
+	"github.com/milobella/shoppinglist-ability/pkg/shoppinglist"
 	"github.com/sirupsen/logrus"
-	"milobella.com/gitlab/milobella/ability-sdk-go/pkg/ability"
-	"milobella.com/gitlab/milobella/shoppinglist-ability/internal/config"
-	"milobella.com/gitlab/milobella/shoppinglist-ability/pkg/shoppinglist"
 )
 
 var shoppingListClient *shoppinglist.Client
@@ -28,20 +28,14 @@ func (c Configuration) String() string {
 	return string(b)
 }
 
-var conf *Configuration
+const (
+	deleteAction="DELETE"
+	addAction="ADD"
+	itemsSlot="ITEMS"
+	itemEntity="SHOPITEM"
+)
 
-var deleteAction string
-var addAction string
-var itemsSlot string
-var itemEntity string
-
-
-//TODO: use this init function to initialize variables instead of initialize on top
 func init() {
-	deleteAction = "DELETE"
-	addAction = "ADD"
-	itemsSlot = "ITEMS"
-	itemEntity = "SHOPITEM"
 
 	logrus.SetFormatter(&logrus.TextFormatter{})
 
@@ -56,7 +50,7 @@ func init() {
 // fun main()
 func main() {
 	//TODO: change the configuration for vyper
-	conf = &Configuration{}
+	conf := &Configuration{}
 
 	// Load the configuration from file or parameter or env
 	err := gonfig.Load(conf, gonfig.Conf{
