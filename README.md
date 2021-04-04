@@ -1,5 +1,5 @@
-# Shopping list ability
-The ability to manage the shopping list.
+# Shopping list Ability
+Milobella Ability to manage the shopping list.
 
 ## Features
 - Add/delete/list items into default or named shopping list;
@@ -7,7 +7,6 @@ The ability to manage the shopping list.
 
 ## Prerequisites
 
-- Having access to [milobella.com/gitlab](https://milobella.com/gitlab/milobella)
 - Having ``golang`` installed [instructions](https://golang.org/doc/install)
 
 ## Build
@@ -19,7 +18,7 @@ $ go build -o bin/ability cmd/ability/main.go
 ## Run
 
 ```bash
-$ bin/ability -c config/ability.toml
+$ bin/ability
 ```
 
 ## Requests example
@@ -27,7 +26,7 @@ $ bin/ability -c config/ability.toml
 #### Trigger the shopping list ability
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "TRIGGER_SHOPPING_LIST"}}'
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "TRIGGER_SHOPPING_LIST"}}'
 HTTP/1.1 200 OK
 Date: Sun, 19 May 2019 14:54:18 GMT
 Content-Length: 206
@@ -39,7 +38,7 @@ Content-Type: text/plain; charset=utf-8
 #### Add item to the shopping list
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "ADD_TO_LIST", "entities": [{"label": "SHOPITEM", "text": "haricots"}]}}'                                                                                                     130 ↵
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "ADD_TO_LIST", "entities": [{"label": "SHOPITEM", "text": "haricots"}]}}'                                                                                                     130 ↵
 HTTP/1.1 200 OK
 Date: Sun, 19 May 2019 14:56:58 GMT
 Content-Length: 167
@@ -51,7 +50,7 @@ Content-Type: text/plain; charset=utf-8
 #### Remove item from the shopping list
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "REMOVE_FROM_LIST", "entities": [{"label": "SHOPITEM", "text": "haricots"}]}}'
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "REMOVE_FROM_LIST", "entities": [{"label": "SHOPITEM", "text": "haricots"}]}}'
 HTTP/1.1 200 OK
 Date: Sun, 19 May 2019 14:58:33 GMT
 Content-Length: 170
@@ -63,7 +62,7 @@ Content-Type: text/plain; charset=utf-8
 #### Remove all items from the shopping list
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "EMPTY_LIST_ITEMS"}}'
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "EMPTY_LIST_ITEMS"}}'
 HTTP/1.1 200 OK
 Date: Wed, 30 Oct 2019 18:43:16 GMT
 Content-Length: 90
@@ -76,7 +75,7 @@ Content-Type: text/plain; charset=utf-8
 #### Count items on the shopping list
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "COUNT_LIST_ITEMS"}}'
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "COUNT_LIST_ITEMS"}}'
 HTTP/1.1 200 OK
 Date: Wed, 30 Oct 2019 18:42:06 GMT
 Content-Length: 155
@@ -88,7 +87,7 @@ Content-Type: text/plain; charset=utf-8
 #### List items on the shopping list
 
 ```bash
-$ curl -i -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "LIST_LIST_ITEMS"}}'
+$ curl -i -H "Content-Type":"application/json" -X POST http://localhost:4444/resolve -d '{"nlu":{"BestIntent": "LIST_LIST_ITEMS"}}'
 HTTP/1.1 200 OK
 Date: Wed, 30 Oct 2019 18:39:44 GMT
 Content-Length: 250
@@ -96,7 +95,3 @@ Content-Type: text/plain; charset=utf-8
 
 {"nlg":{"sentence":"You have {{count}} items in your shopping list. There are {{items}}.","params":[{"name":"count","value":2,"type":"string"},{"name":"items","value":["haricots","haricots"],"type":"enumerated_list"}]},"context":{"slot_filling":{}}}
 ```
-
-## CHANGELOGS
-- [Application changelog](./CHANGELOG.md)
-- [Helm chart changelog](./helm/oratio/CHANGELOG.md)

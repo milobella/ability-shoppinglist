@@ -3,7 +3,7 @@
 
 ########################################################################
 ### builder stage : Build the golang application in src folder
-FROM golang:1.14-alpine as builder
+FROM golang:1.16-alpine as builder
 
 COPY . /src
 WORKDIR /src
@@ -41,10 +41,9 @@ LABEL org.label-schema.docker.cmd="docker run -it $DOCKER_IMAGE:$BUILD_VERSION"
 ENV CONFIGURATION_PATH=/etc/ability/config.toml
 ENV BINARY_PATH=/bin/ability
 
-COPY --from=builder /src/config/ability.toml ${CONFIGURATION_PATH}
+COPY --from=builder /src/config.toml ${CONFIGURATION_PATH}
 COPY --from=builder /src/bin/main $BINARY_PATH
 
 # Build the main command
-CMD .$BINARY_PATH --configfile $CONFIGURATION_PATH
+CMD .$BINARY_PATH
 ########################################################################
-

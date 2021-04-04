@@ -2,6 +2,7 @@
 port = 4444
 log_level = "<root>=DEBUG"
 
-[tool]
+[tools]
+[tools.shoppinglist]
 host = "0.0.0.0"
-port = 4848
+port = 5555

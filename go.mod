@@ -1,10 +1,8 @@
-module github.com/milobella/shoppinglist-ability
+module github.com/milobella/ability-shoppinglist
 
-go 1.13
+go 1.16
 
 require (
-	github.com/celian-garcia/gonfig v0.1.1
-	github.com/milobella/ability-sdk-go v0.0.0-20200510105236-a2ed95bf1ad8
-	github.com/pelletier/go-toml v1.7.0 // indirect
-	github.com/sirupsen/logrus v1.6.0
+	github.com/milobella/ability-sdk-go v0.4.2
+	github.com/sirupsen/logrus v1.5.0
 )

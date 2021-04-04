@@ -1,32 +1,11 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"os"
-
-	"github.com/celian-garcia/gonfig"
 	"github.com/milobella/ability-sdk-go/pkg/ability"
-	"github.com/milobella/shoppinglist-ability/internal/config"
-	"github.com/milobella/shoppinglist-ability/pkg/shoppinglist"
-	"github.com/sirupsen/logrus"
+	"github.com/milobella/ability-shoppinglist/pkg/shoppinglist"
 )
 
 var shoppingListClient *shoppinglist.Client
-
-type Configuration struct {
-	Server     config.ServerConfiguration
-	Tool       config.ToolConfiguration
-	ConfigFile string `short:"c"`
-}
-
-func (c Configuration) String() string {
-	b, err := json.Marshal(c)
-	if err != nil {
-		log.Fatalf("Configuration serialization error %v", err)
-	}
-	return string(b)
-}
 
 const (
 	deleteAction="DELETE"
@@ -35,42 +14,13 @@ const (
 	itemEntity="SHOPITEM"
 )
 
-func init() {
-
-	logrus.SetFormatter(&logrus.TextFormatter{})
-
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
-	logrus.SetOutput(os.Stdout)
-
-	// TODO: read it in the config when move to viper
-	logrus.SetLevel(logrus.DebugLevel)
-}
-
 // fun main()
 func main() {
-	//TODO: change the configuration for vyper
-	conf := &Configuration{}
-
-	// Load the configuration from file or parameter or env
-	err := gonfig.Load(conf, gonfig.Conf{
-		ConfigFileVariable: "configfile", // enables passing --configfile myfile.conf
-
-		FileDefaultFilename: "config/ability.toml",
-		FileDecoder:         gonfig.DecoderTOML,
-
-		EnvPrefix: "ABILITY_",
-	})
-
-	if err != nil {
-		logrus.Fatalf("Error reading config : %s", err)
-	} else {
-		logrus.Infof("Successfully readen configuration file : %s", conf.ConfigFile)
-		logrus.Debugf("-> %+v", conf)
-	}
+	// Read configuration
+	conf := ability.ReadConfiguration()
 
 	// Initialize client for shopping list tool
-	shoppingListClient = shoppinglist.NewClient(conf.Tool.Host, conf.Tool.Port)
+	shoppingListClient = shoppinglist.NewClient(conf.Tools["shoppinglist"].Host, conf.Tools["shoppinglist"].Port)
 
 	// Initialize server
 	server := ability.NewServer("Shopping List Ability", conf.Server.Port)
