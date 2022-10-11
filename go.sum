@@ -236,10 +236,14 @@ github.com/milobella/ability-sdk-go v0.9.0 h1://SEPF4Eenl+Nc8VeGP3T/bqPozw2NcjjG
 github.com/milobella/ability-sdk-go v0.9.0/go.mod h1:16QcKXdeC5MWDxeUJj0kvK0zHb11JCzYEHXt93NZoW8=
 github.com/milobella/ability-sdk-go v0.9.1 h1:l09emESKaivhTvw71d75MFlQuCXvURZNjq0Scr4IPw4=
 github.com/milobella/ability-sdk-go v0.9.1/go.mod h1:2+0/38bI23ql4R1hbxr/bph9Mnxms4AQAXBRQM9ayno=
+github.com/milobella/ability-sdk-go v0.10.0 h1:tupE8xtx1J97oN3z/BfeB0zhAx4m2UwdDzsVHunmf64=
+github.com/milobella/ability-sdk-go v0.10.0/go.mod h1:ebtps3XDHvMTvmzdWnUWtCanDnQAjTNQ0N4cJNWHDss=
 github.com/milobella/oratio v1.4.3 h1:tcRVVQcL6YcAtinb7fyfg6m1q9SsGrRcI9mZZNnjNNA=
 github.com/milobella/oratio v1.4.3/go.mod h1:mngE1nPc7v/GmGh9MIrKJ/4KfNv3Utfgvk/GaT2WAuY=
 github.com/milobella/oratio v1.4.4 h1:HTumC1SLAU1+mqkKJKyfXFMLlTvlaBLAJApOcz9RPKM=
 github.com/milobella/oratio v1.4.4/go.mod h1:moqotaPFw3+wbMY3Rj50+uthSKXQSZuJMns1ynlYgq4=
+github.com/milobella/oratio v1.4.5 h1:YEDdNfHFPJAPThnDUdLjBjuyjiw05HfbvXDeJrJt9dQ=
+github.com/milobella/oratio v1.4.5/go.mod h1:g8eU3WNDMN74LN5GgmYuNTSH95yh9CUJdEQkfZyDbEI=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
 github.com/mitchellh/go-homedir v1.0.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/mitchellh/go-testing-interface v1.0.0/go.mod h1:kRemZodwjscx+RGhAo8eIhFbs2+BFgRtFPeD/KE+zxI=
